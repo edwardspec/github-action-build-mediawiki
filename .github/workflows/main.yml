@@ -33,4 +33,4 @@ jobs:
           branch: ${{ env.branch }}
 
       - name: Try running some maintenance script on the newly installed MediaWiki instance
-        run: echo '{{CURRENTVERSION}}' | php maintenance/parse.php
+        run: cd mediawiki && echo '{{CURRENTVERSION}}' | php maintenance/parse.php

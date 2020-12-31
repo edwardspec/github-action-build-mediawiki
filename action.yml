@@ -28,13 +28,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Use the build cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.composer/cache
-          buildcache
-        key: buildcache-${{ inputs.branch }}
     - name: Install MediaWiki
       shell: bash
       run: |

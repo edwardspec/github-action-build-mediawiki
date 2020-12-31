@@ -17,11 +17,17 @@ jobs:
       branch: REL1_35
     steps:
       - uses: actions/checkout@v2
-
+      - name: Use the build cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.composer/cache
+            buildcache
+          key: buildcache-${{ env.branch }}
       - name: Call the "install MediaWiki" action
         uses: ./
         with:
-          branch: REL1_35
+          branch: ${{ env.branch }}
 
       - name: Try running some maintenance script on the newly installed MediaWiki instance
         run: echo '{{CURRENTVERSION}}' | php maintenance/parse.php

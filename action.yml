@@ -31,7 +31,7 @@ runs:
     - name: Install MediaWiki
       shell: bash
       run: |
-        bash -ex ${{ github.action_path }}/build_mediawiki.sh "$branch"
+        bash -ex ${{ github.action_path }}/scripts/build_mediawiki.sh "$branch"
         cd mediawiki
         php maintenance/install.php ghactionmediawiki admin \
           --pass $(dd if=/dev/urandom count=1 bs=20 2>/dev/null | base64) \

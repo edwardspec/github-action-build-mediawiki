@@ -26,7 +26,7 @@ jobs:
           path: |
             ~/.composer/cache
             buildcache
-          key: buildcache-${{ env.branch }}
+          key: buildcache-${{ env.branch }}-${{ hashFiles('**/scripts', '**/action.yml') }}
       - name: Call the "install MediaWiki" action
         uses: ./
         with:

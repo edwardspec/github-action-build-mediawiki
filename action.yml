@@ -24,6 +24,18 @@ inputs:
     description: 'Password of SQL user. Default: empty (since this is not a publicly accessible SQL server, but a temporary instance).'
     required: false
     default: ""
+  extensions:
+    description: 'Space-separated list of additional MediaWiki extensions to install, e.g. "Echo PageForms". Default: "".'
+    required: false
+    default: ""
+  skins:
+    description: 'Space-separated list of MediaWiki skins to install, e.g. "MinervaNeue". Default: "".'
+    required: false
+    default: ""
+  extraLocalSettings:
+    description: 'Path to file that will be appended to LocalSettings.php during the installation. It can contain wfLoadExtension() lines, etc.'
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -31,7 +43,7 @@ runs:
     - name: Install MediaWiki
       shell: bash
       run: |
-        bash -ex ${{ github.action_path }}/scripts/build_mediawiki.sh "$branch"
+        EXTRA_EXTENSIONS="${{ inputs.extensions }}" EXTRA_SKINS="${{ inputs.skins }}" bash -ex ${{ github.action_path }}/scripts/build_mediawiki.sh "$branch"
         cd mediawiki
         php maintenance/install.php ghactionmediawiki admin \
           --pass $(dd if=/dev/urandom count=1 bs=20 2>/dev/null | base64) \
@@ -42,4 +54,5 @@ runs:
           --dbpass "${{ inputs.dbpass }}" \
           --scriptpath "/w"
         echo -en "\n\nrequire_once __DIR__ . '/includes/DevelopmentSettings.php';\n" >> ./LocalSettings.php
+        [[ -z "${{ inputs.extraLocalSettings }}" ]] || echo -en "\n\nrequire_once '${{ inputs.extraLocalSettings }}';\n" >> ./LocalSettings.php
         php -l ./LocalSettings.php

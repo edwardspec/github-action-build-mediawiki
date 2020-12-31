@@ -17,6 +17,18 @@ if [ ! -f buildcache/mediawiki/COMPLETE ]; then
 
 		cd mediawiki
 
+		( cd extensions
+		for EXT in $EXTRA_EXTENSIONS; do
+			clonebranch https://gerrit.wikimedia.org/r/mediawiki/extensions/$EXT.git $EXT
+		done
+		)
+
+		( cd skins
+		for SKIN in $EXTRA_SKINS; do
+			clonebranch https://gerrit.wikimedia.org/r/mediawiki/skins/$SKIN.git $SKIN
+		done
+		)
+
 		find . -name .git | xargs rm -rf
 
 		composer install --no-interaction

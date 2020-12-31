@@ -17,8 +17,11 @@ jobs:
       branch: REL1_35
     steps:
       - uses: actions/checkout@v2
-      - name: Use the build cache
-        uses: actions/cache@v2
+      - uses: shivammathur/setup-php@v2
+        with:
+            php-version: '7.4'
+            tools: composer:v1
+      - uses: actions/cache@v2
         with:
           path: |
             ~/.composer/cache

@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Call the "install MediaWiki" action
-        uses: ../..@master
+        uses: ./
         with:
           branch: REL1_35
 

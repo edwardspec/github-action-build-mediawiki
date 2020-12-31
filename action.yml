@@ -36,6 +36,7 @@ runs:
           buildcache
         key: buildcache-${{ inputs.branch }}
     - name: Install MediaWiki
+      shell: bash
       run: |
         bash -ex ${{ github.action_path }}/build_mediawiki.sh "$branch"
         cd mediawiki

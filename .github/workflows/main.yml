@@ -1,0 +1,27 @@
+name: Test action
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  test-action:
+    runs-on: ubuntu-20.04
+    services:
+      mariadb:
+        image: mariadb
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 1
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      branch: REL1_35
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Call the "install MediaWiki" action
+        uses: ../..@master
+        with:
+          branch: REL1_35
+
+      - name: Try running some maintenance script on the newly installed MediaWiki instance
+        run: echo '{{CURRENTVERSION}}' | php maintenance/parse.php

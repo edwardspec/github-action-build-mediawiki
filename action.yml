@@ -1,0 +1,51 @@
+name: 'Install MediaWiki'
+description: 'Creates a local MediaWiki installation for running phpunit, phan, etc. on MediaWiki extensions'
+inputs:
+  branch:
+    description: 'Branch of MediaWiki that should be installed, e.g. REL1_31, REL1_35, etc.'
+    required: true
+  dbname:
+    description: 'Name of SQL database, e.g. testwiki'
+    required: false
+    default: "testwiki"
+  dbserver:
+    description: 'Hostname/port of SQL server, e.g. 127.0.0.1:3306'
+    required: false
+    default: "127.0.0.1:3306"
+  dbtype:
+    description: 'Either mysql or postgresql (default: mysql). Note: both MySQL and MariaDB need the value "mysql" here.'
+    required: false
+    default: "mysql"
+  dbuser:
+    description: 'Name of SQL user, e.g. "root".'
+    required: false
+    default: "root"
+  dbpass:
+    description: 'Password of SQL user. Default: empty (since this is not a publicly accessible SQL server, but a temporary instance).'
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Use the build cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.composer/cache
+          buildcache
+        key: buildcache-${{ inputs.branch }}
+    - name: Install MediaWiki
+      run: |
+        bash -ex ${{ github.action_path }}/build_mediawiki.sh "$branch"
+        cd mediawiki
+        php maintenance/install.php ghactionmediawiki admin \
+          --pass $(dd if=/dev/urandom count=1 bs=20 2>/dev/null | base64) \
+          --dbtype "${{ inputs.dbtype }}" \
+          --dbserver "${{ inputs.dbserver }}" \
+          --dbname "${{ inputs.dbname }}" \
+          --dbuser "${{ inputs.dbuser }}" \
+          --dbpass "${{ inputs.dbpass }}" \
+          --scriptpath "/w"
+        echo -en "\n\nrequire_once __DIR__ . '/includes/DevelopmentSettings.php';\n" >> ./LocalSettings.php
+        php -l ./LocalSettings.php

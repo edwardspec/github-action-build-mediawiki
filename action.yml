@@ -36,6 +36,10 @@ inputs:
     description: 'Relative path to file that will be appended to LocalSettings.php during the installation. It can contain wfLoadExtension() lines, etc. (this path is relative to the directory where this action is invoked)'
     required: false
     default: ""
+  noinstall:
+    description: "If set to 1, then install.php won't be called. Useful when you only need to run Phan (which only needs MediaWiki sources, but doesn't require full installation, database, etc.)."
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -45,7 +49,7 @@ runs:
       run: |
         EXTRA_EXTENSIONS="${{ inputs.extensions }}" EXTRA_SKINS="${{ inputs.skins }}" bash -ex ${{ github.action_path }}/scripts/build_mediawiki.sh "$branch"
         cd mediawiki
-        php maintenance/install.php ghactionmediawiki admin \
+        [[ -z "${{ inputs.noinstall }}" ]] && php maintenance/install.php ghactionmediawiki admin \
           --pass $(dd if=/dev/urandom count=1 bs=20 2>/dev/null | base64) \
           --dbtype "${{ inputs.dbtype }}" \
           --dbserver "${{ inputs.dbserver }}" \

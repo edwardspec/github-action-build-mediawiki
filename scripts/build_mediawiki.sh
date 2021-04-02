@@ -13,7 +13,7 @@ GITCLONE_OPTS="--depth 1 --recurse-submodules -j 5 -b $branch"
 #
 function clonebranch()
 {
-	# Shorter Travis logs: hide everything except "git clone" command
+	# Shorter logs: hide everything except "git clone" command
 	{ set +x; } 2>/dev/null
 
 	URL=$1

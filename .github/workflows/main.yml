@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test-action:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     services:
       mariadb:
         image: mariadb
@@ -14,13 +14,13 @@ jobs:
           - 3306:3306
         options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
     env:
-      branch: REL1_35
+      branch: REL1_39
     steps:
       - uses: actions/checkout@v2
       - uses: shivammathur/setup-php@v2
         with:
             php-version: '7.4'
-            tools: composer:v1
+            tools: composer
       - uses: actions/cache@v2
         with:
           path: |

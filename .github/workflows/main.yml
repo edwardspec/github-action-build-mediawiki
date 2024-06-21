@@ -16,12 +16,12 @@ jobs:
     env:
       branch: REL1_39
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
             php-version: '7.4'
             tools: composer
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: |
             ~/.composer/cache

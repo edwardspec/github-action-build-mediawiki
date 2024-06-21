@@ -12,7 +12,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: 1
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="healthcheck.sh --connect --innodb_initialized" --health-interval=10s --health-timeout=5s --health-retries=3
     env:
       branch: REL1_35
     steps:

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 ###############################################################################
 # Assemble the directory with MediaWiki
 # Usage: ./build_mediawiki REL1_31
@@ -46,13 +46,13 @@ if [ ! -f buildcache/mediawiki/COMPLETE ]; then
 		cd mediawiki
 
 		( cd extensions
-		for EXT in $EXTRA_EXTENSIONS; do
+		for EXT in $BUILDMW_EXTRA_EXTENSIONS; do
 			clonebranch https://gerrit.wikimedia.org/r/mediawiki/extensions/$EXT.git $EXT
 		done
 		)
 
 		( cd skins
-		for SKIN in $EXTRA_SKINS; do
+		for SKIN in $BUILDMW_EXTRA_SKINS; do
 			clonebranch https://gerrit.wikimedia.org/r/mediawiki/skins/$SKIN.git $SKIN
 		done
 		)
@@ -64,4 +64,5 @@ if [ ! -f buildcache/mediawiki/COMPLETE ]; then
 	)
 fi
 
+rm -rf mediawiki
 cp -r buildcache/mediawiki ./

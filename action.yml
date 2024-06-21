@@ -46,17 +46,16 @@ runs:
   steps:
     - name: Install MediaWiki
       shell: bash
-      run: |
-        EXTRA_EXTENSIONS="${{ inputs.extensions }}" EXTRA_SKINS="${{ inputs.skins }}" bash -ex ${{ github.action_path }}/scripts/build_mediawiki.sh "$branch"
-        cd mediawiki
-        [[ -z "${{ inputs.noinstall }}" ]] && php maintenance/install.php ghactionmediawiki admin \
-          --pass $(dd if=/dev/urandom count=1 bs=20 2>/dev/null | base64) \
-          --dbtype "${{ inputs.dbtype }}" \
-          --dbserver "${{ inputs.dbserver }}" \
-          --dbname "${{ inputs.dbname }}" \
-          --dbuser "${{ inputs.dbuser }}" \
-          --dbpass "${{ inputs.dbpass }}" \
-          --scriptpath "/w"
-        echo -en "\n\nrequire_once __DIR__ . '/includes/DevelopmentSettings.php';\n" >> ./LocalSettings.php
-        [[ -z "${{ inputs.extraLocalSettings }}" ]] || echo -en "\n\nrequire_once __DIR__ . '/../${{ inputs.extraLocalSettings }}';\n" >> ./LocalSettings.php
-        php -l ./LocalSettings.php
+      env:
+        BUILDMW_BRANCH: ${{ inputs.branch }}
+        BUILDMW_DBNAME: ${{ inputs.dbname }}
+        BUILDMW_DBPASS: ${{ inputs.dbpass }}
+        BUILDMW_DBSERVER: ${{ inputs.dbserver }}
+        BUILDMW_DBTYPE: ${{ inputs.dbtype }}
+        BUILDMW_DBUSER: ${{ inputs.dbuser }}
+        BUILDMW_EXTRA_EXTENSIONS: ${{ inputs.extensions }}
+        BUILDMW_EXTRA_LOCALSETTINGS: ${{ inputs.extraLocalSettings }}
+        BUILDMW_EXTRA_SKINS: ${{ inputs.skins }}
+        BUILDMW_NOINSTALL: ${{ inputs.noinstall }}
+      run: ${{ github.action_path }}/scripts/install_mediawiki.sh
+

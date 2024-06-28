@@ -57,7 +57,9 @@ if [ ! -f buildcache/mediawiki/COMPLETE ]; then
 		done
 		)
 
-		find . -name .git | xargs rm -rf
+		if [ -z "$BUILDMW_KEEPGIT" ]; then
+			find . -name .git | xargs rm -rf
+		fi
 
 		composer install --no-interaction
 		touch COMPLETE # Mark this buildcache as usable

@@ -7,6 +7,8 @@
 branch=$1
 GITCLONE_OPTS="--depth 1 --recurse-submodules -j 5 -b $branch"
 
+export GIT_HTTP_USER_AGENT="GitHubActions/0.0 (https://github.com/edwardspec/github-action-build-mediawiki/)"
+
 # Clone extension/skin of the chosen REL_ branch (if exists).
 # If REL_ branch doesn't exist (which happens when testing against trunk
 # or pre-release of MediaWiki core), "master" branch is used instead.
